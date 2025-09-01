@@ -1,4 +1,4 @@
-# ShaadiSphere - Wedding Services Booking Platform
+# ShaadiBazaarHub- Wedding Services Booking Platform
 
 A full-stack web application for booking wedding-related services like chairs, tables, tents, band baja, catering, and more. Features secure payment processing, real-time notifications, and comprehensive service management.
 
