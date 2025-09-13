@@ -30,7 +30,22 @@ export default function ServiceList() {
         {services.map(s => (
           <div key={s.id} className="col-md-4">
             <div className="card h-100">
-              {s.photo_url && <img src={s.photo_url} className="card-img-top" alt={s.name} />}
+              {s.photo_url && (
+                <img 
+                  src={s.photo_url} 
+                  className="card-img-top" 
+                  alt={s.name}
+                  style={{
+                    height: '200px',
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                    borderBottom: '1px solid #dee2e6'
+                  }}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              )}
               <div className="card-body">
                 <h5 className="card-title">{s.name}</h5>
                 <p className="card-text">{s.description}</p>

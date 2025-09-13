@@ -34,7 +34,23 @@ export default function ServiceDetail() {
     <div className="row">
       <div className="col-md-8">
         <h2>{service.name}</h2>
-        {service.photo_url && <img src={service.photo_url} className="img-fluid mb-3" alt={service.name} />}
+        {service.photo_url && (
+          <img 
+            src={service.photo_url} 
+            className="img-fluid mb-3 rounded" 
+            alt={service.name}
+            style={{
+              maxHeight: '400px',
+              width: '100%',
+              objectFit: 'cover',
+              objectPosition: 'center',
+              border: '1px solid #dee2e6'
+            }}
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        )}
         <p>{service.description}</p>
         <p><strong>₹{service.price}</strong> · {service.location}</p>
       </div>

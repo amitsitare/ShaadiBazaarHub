@@ -231,7 +231,16 @@ export default function ProviderDashboard() {
                                 src={service.photo_url} 
                                 alt={service.name} 
                                 className="rounded me-3" 
-                                style={{ width: '60px', height: '60px', objectFit: 'cover' }}
+                                style={{ 
+                                  width: '60px', 
+                                  height: '60px', 
+                                  objectFit: 'cover',
+                                  objectPosition: 'center',
+                                  border: '1px solid #dee2e6'
+                                }}
+                                onError={(e) => {
+                                  e.target.style.display = 'none';
+                                }}
                               />
                             )}
                             <div>
