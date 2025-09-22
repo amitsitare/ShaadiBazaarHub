@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-ShaadiSphere Database Setup
+ShaadiBazaarHub Database Setup
 This script creates the database tables and inserts sample data
 """
 
@@ -50,6 +50,7 @@ def create_tables(conn):
             name TEXT NOT NULL,
             email TEXT UNIQUE NOT NULL,
             mobile TEXT NOT NULL,
+            whatsapp_number TEXT,
             address TEXT NOT NULL,
             role TEXT NOT NULL CHECK (role IN ('provider','customer')),
             password_hash TEXT NOT NULL,
@@ -94,6 +95,15 @@ def create_tables(conn):
         CREATE INDEX IF NOT EXISTS idx_services_location ON services (location);
     """)
     
+    # Add whatsapp_number column if it doesn't exist (for existing databases)
+    try:
+        conn.execute("""
+            ALTER TABLE users ADD COLUMN IF NOT EXISTS whatsapp_number TEXT;
+        """)
+        print("Added whatsapp_number column to users table")
+    except Exception as e:
+        print(f"Note: whatsapp_number column may already exist: {e}")
+    
     print("Tables created successfully!")
 
 
@@ -107,6 +117,7 @@ def insert_sample_data(conn):
             'name': 'Rajesh Catering Services',
             'email': 'rajesh@catering.com',
             'mobile': '9876543210',
+            'whatsapp_number': '+919876543210',
             'address': '123 Food Street, Mumbai',
             'role': 'provider',
             'password_hash': '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iQeO'  # password123
@@ -115,6 +126,7 @@ def insert_sample_data(conn):
             'name': 'Priya Tent House',
             'email': 'priya@tent.com',
             'mobile': '9876543211',
+            'whatsapp_number': '+919876543211',
             'address': '456 Tent Road, Delhi',
             'role': 'provider',
             'password_hash': '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iQeO'  # password123
@@ -123,6 +135,7 @@ def insert_sample_data(conn):
             'name': 'Amit Band Baja',
             'email': 'amit@bandbaja.com',
             'mobile': '9876543212',
+            'whatsapp_number': '+919876543212',
             'address': '789 Music Lane, Bangalore',
             'role': 'provider',
             'password_hash': '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iQeO'  # password123
@@ -131,6 +144,7 @@ def insert_sample_data(conn):
             'name': 'Customer One',
             'email': 'customer1@email.com',
             'mobile': '9876543213',
+            'whatsapp_number': '+919876543213',
             'address': '321 Customer Street, Pune',
             'role': 'customer',
             'password_hash': '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iQeO'  # password123
@@ -139,6 +153,7 @@ def insert_sample_data(conn):
             'name': 'Customer Two',
             'email': 'customer2@email.com',
             'mobile': '9876543214',
+            'whatsapp_number': '+919876543214',
             'address': '654 Customer Avenue, Chennai',
             'role': 'customer',
             'password_hash': '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewdBPj4J/HS.iQeO'  # password123
@@ -148,10 +163,10 @@ def insert_sample_data(conn):
     # Insert users
     for user in sample_users:
         conn.execute("""
-            INSERT INTO users (name, email, mobile, address, role, password_hash)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO users (name, email, mobile, whatsapp_number, address, role, password_hash)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (email) DO NOTHING
-        """, (user['name'], user['email'], user['mobile'], user['address'], user['role'], user['password_hash']))
+        """, (user['name'], user['email'], user['mobile'], user['whatsapp_number'], user['address'], user['role'], user['password_hash']))
     
     # Sample services
     sample_services = [
@@ -248,7 +263,7 @@ def main():
     """Main function to setup database"""
     config = get_db_config()
     
-    print("ShaadiSphere Database Setup")
+    print("ShaadiBazaarHub Database Setup")
     print("=" * 40)
     print(f"Host: {config['host']}")
     print(f"Port: {config['port']}")

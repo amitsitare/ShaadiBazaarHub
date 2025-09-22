@@ -226,7 +226,7 @@ export default function ProviderDashboard() {
                       <div className="row align-items-center">
                         <div className="col-md-8">
                           <div className="d-flex align-items-center mb-2">
-                            {service.photo_url && (
+                            {service.photo_url ? (
                               <img 
                                 src={service.photo_url} 
                                 alt={service.name} 
@@ -242,6 +242,17 @@ export default function ProviderDashboard() {
                                   e.target.style.display = 'none';
                                 }}
                               />
+                            ) : (
+                              <div 
+                                className="rounded me-3 d-flex align-items-center justify-content-center bg-light"
+                                style={{ 
+                                  width: '60px', 
+                                  height: '60px', 
+                                  border: '1px solid #dee2e6'
+                                }}
+                              >
+                                <i className="fas fa-image text-muted" style={{ fontSize: '1.2rem' }}></i>
+                              </div>
                             )}
                             <div>
                               <h6 className="mb-1 fw-bold">{service.name}</h6>

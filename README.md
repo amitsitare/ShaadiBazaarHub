@@ -1,4 +1,4 @@
-# ShaadiBazaarHub- Wedding Services Booking Platform
+# ShaadiBazaarHub - Wedding Services Booking Platform
 
 A full-stack web application for booking wedding-related services like chairs, tables, tents, band baja, catering, and more. Features secure payment processing, real-time notifications, and comprehensive service management.
 
@@ -22,10 +22,12 @@ A full-stack web application for booking wedding-related services like chairs, t
 - **Secure Checkout**: PCI-compliant payment processing
 
 ### 📱 Real-time Notifications
-- **WhatsApp Notifications**: Providers receive instant WhatsApp messages for new bookings
-- **Email Notifications**: Automated email alerts with booking details
-- **Customer Information**: Providers get customer contact details for coordination
-- **Booking Confirmations**: Customers receive booking confirmation notifications
+- **WhatsApp Notifications**: Providers receive instant WhatsApp messages for new bookings with customer details
+- **Customer Information**: Providers get customer contact details, address, and booking specifics
+- **Booking Details**: Service name, price, event date, quantity, and special notes included
+- **Multiple WhatsApp APIs**: Support for both Meta WhatsApp Business API and Twilio WhatsApp
+- **Email Notifications**: Automated email alerts with booking details (planned)
+- **Booking Confirmations**: Customers receive booking confirmation notifications (planned)
 
 ### 📋 Booking System
 - **Service Booking**: Customers can book services with date and quantity selection
@@ -78,7 +80,7 @@ A full-stack web application for booking wedding-related services like chairs, t
 
 ```bash
 git clone <your-repo-url>
-cd ShaadiSphere
+cd ShaadiBazaarHub
 ```
 
 ### 2. Backend Setup
@@ -158,10 +160,94 @@ SMTP_USER=your_email@gmail.com
 SMTP_PASSWORD=your_app_password
 EMAIL_FROM=your_email@gmail.com
 
-# WhatsApp Configuration
-WHATSAPP_API_KEY=your_whatsapp_api_key
-WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id
-WHATSAPP_ACCESS_TOKEN=your_access_token
+# WhatsApp Configuration (Meta WhatsApp Business API)
+WHATSAPP_ENABLED=true
+WHATSAPP_ACCESS_TOKEN=your_whatsapp_access_token_here
+WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id_here
+WHATSAPP_API_URL=https://graph.facebook.com/v18.0
+WHATSAPP_WEBHOOK_VERIFY_TOKEN=shaadibazaarhub_verify_token
+
+# Alternative: Twilio WhatsApp (if you prefer Twilio over Meta)
+TWILIO_ENABLED=false
+TWILIO_ACCOUNT_SID=your_twilio_account_sid_here
+TWILIO_AUTH_TOKEN=your_twilio_auth_token_here
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+```
+
+## 📱 WhatsApp Integration
+
+### Meta WhatsApp Business API Setup (Recommended - FREE)
+
+1. **Create Facebook App**:
+   - Go to [Facebook Developers](https://developers.facebook.com/apps/)
+   - Click "Create App" → Select "Business" → "WhatsApp Business Platform"
+   - Follow the setup wizard
+
+2. **Get WhatsApp Business Account**:
+   - Add a phone number to your WhatsApp Business Account
+   - Verify the phone number via SMS/call
+
+3. **Get Credentials**:
+   - **Access Token**: From your app's WhatsApp > API Setup
+   - **Phone Number ID**: Found in WhatsApp > API Setup
+   - **Webhook Verify Token**: Create a custom token (use the one in .env)
+
+4. **Configure Environment Variables**:
+   ```env
+   WHATSAPP_ENABLED=true
+   WHATSAPP_ACCESS_TOKEN=your_access_token_here
+   WHATSAPP_PHONE_NUMBER_ID=your_phone_number_id_here
+   ```
+
+5. **Test Integration**:
+   ```bash
+   cd backend
+   python test_whatsapp.py
+   ```
+
+### Twilio WhatsApp Setup (Alternative)
+
+1. **Create Twilio Account**:
+   - Sign up at [Twilio Console](https://console.twilio.com/)
+   - Get Account SID and Auth Token
+
+2. **Enable WhatsApp Sandbox**:
+   - Go to Messaging > Try it out > Send a WhatsApp message
+   - Follow instructions to connect your WhatsApp number
+
+3. **Configure Environment Variables**:
+   ```env
+   TWILIO_ENABLED=true
+   TWILIO_ACCOUNT_SID=your_account_sid_here
+   TWILIO_AUTH_TOKEN=your_auth_token_here
+   ```
+
+### WhatsApp Message Format
+
+When a customer books a service, providers receive a WhatsApp message with:
+
+```
+🎉 New Booking Alert! 🎉
+
+📋 Booking Details:
+• Service: Wedding Photography
+• Price: ₹25,000.00
+• Quantity: 1
+• Event Date: 2024-03-15
+
+👤 Customer Information:
+• Name: Rajesh Kumar
+• Mobile: +919876543211
+• Address: 123 Main Street, Mumbai, Maharashtra 400001
+
+📝 Additional Notes:
+Please arrive 2 hours before the ceremony.
+
+🔗 Next Steps:
+Please contact the customer to confirm the booking and discuss further details.
+
+---
+ShaadiBazaarHub - Your Wedding Partner 💒
 ```
 
 ## 💳 Payment Integration
@@ -254,7 +340,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 For support and questions:
-- **Email**: support@shaadisphere.com
+- **Email**: support@shaadibazaarhub.com
 - **Documentation**: Check the API docs at `/docs`
 - **Issues**: Report bugs via GitHub issues
 

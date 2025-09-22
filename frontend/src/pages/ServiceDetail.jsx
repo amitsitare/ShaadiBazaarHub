@@ -34,7 +34,7 @@ export default function ServiceDetail() {
     <div className="row">
       <div className="col-md-8">
         <h2>{service.name}</h2>
-        {service.photo_url && (
+        {service.photo_url ? (
           <img 
             src={service.photo_url} 
             className="img-fluid mb-3 rounded" 
@@ -50,6 +50,16 @@ export default function ServiceDetail() {
               e.target.style.display = 'none';
             }}
           />
+        ) : (
+          <div 
+            className="img-fluid mb-3 rounded d-flex align-items-center justify-content-center bg-light"
+            style={{
+              height: '300px',
+              border: '1px solid #dee2e6'
+            }}
+          >
+            <i className="fas fa-image text-muted" style={{ fontSize: '3rem' }}></i>
+          </div>
         )}
         <p>{service.description}</p>
         <p><strong>₹{service.price}</strong> · {service.location}</p>

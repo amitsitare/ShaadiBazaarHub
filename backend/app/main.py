@@ -7,7 +7,7 @@ from .routes import bookings as bookings_routes
 from .config import settings
 
 
-app = FastAPI(title="ShaadiSphere API", version="0.1.0")
+app = FastAPI(title="ShaadiBazaarHub API", version="0.1.0")
 
 # Configure CORS with frontend URL
 app.add_middleware(

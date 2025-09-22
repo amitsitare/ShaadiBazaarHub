@@ -37,11 +37,11 @@ async def register(user: UserCreate, conn=Depends(get_db_conn)):
             # Insert new user
             await cur.execute(
                 """
-                INSERT INTO users (name, email, mobile, address, role, password_hash)
-                VALUES (%s, %s, %s, %s, %s, %s)
-                RETURNING id, name, email, mobile, address, role
+                INSERT INTO users (name, email, mobile, whatsapp_number, address, role, password_hash)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, name, email, mobile, whatsapp_number, address, role
                 """,
-                (user.name, user.email, user.mobile, user.address, user.role, hash_password(user.password)),
+                (user.name, user.email, user.mobile, user.whatsapp_number, user.address, user.role, hash_password(user.password)),
             )
             row = await cur.fetchone()
             await conn.commit()
@@ -51,8 +51,9 @@ async def register(user: UserCreate, conn=Depends(get_db_conn)):
                 "name": row[1],
                 "email": row[2],
                 "mobile": row[3],
-                "address": row[4],
-                "role": row[5],
+                "whatsapp_number": row[4],
+                "address": row[5],
+                "role": row[6],
             })
     except psycopg.IntegrityError as e:
         await conn.rollback()
@@ -115,7 +116,7 @@ async def me(payload=Depends(get_current_user), conn=Depends(get_db_conn)):
         user_id = int(payload["sub"])  # subject is user id
         async with conn.cursor() as cur:
             await cur.execute(
-                "SELECT id, name, email, mobile, address, role FROM users WHERE id = %s", 
+                "SELECT id, name, email, mobile, whatsapp_number, address, role FROM users WHERE id = %s", 
                 (user_id,)
             )
             row = await cur.fetchone()
@@ -126,8 +127,9 @@ async def me(payload=Depends(get_current_user), conn=Depends(get_db_conn)):
                 "name": row[1],
                 "email": row[2],
                 "mobile": row[3],
-                "address": row[4],
-                "role": row[5],
+                "whatsapp_number": row[4],
+                "address": row[5],
+                "role": row[6],
             })
     except HTTPException:
         raise

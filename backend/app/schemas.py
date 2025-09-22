@@ -1,4 +1,5 @@
 from typing import Optional, Literal
+from datetime import date
 from pydantic import BaseModel, EmailStr
 
 
@@ -9,6 +10,7 @@ class UserBase(BaseModel):
     name: str
     email: EmailStr
     mobile: str
+    whatsapp_number: Optional[str] = None
     address: str
     role: UserRole
 
@@ -27,6 +29,7 @@ class UserPublic(BaseModel):
     name: str
     email: EmailStr
     mobile: str
+    whatsapp_number: Optional[str] = None
     address: str
     role: UserRole
 
@@ -55,7 +58,7 @@ class ServicePublic(ServiceBase):
 
 class BookingBase(BaseModel):
     service_id: int
-    event_date: str
+    event_date: date
     quantity: Optional[int] = 1
     notes: Optional[str] = None
 

@@ -42,6 +42,13 @@ class Settings(BaseModel):
     
     # Frontend URL for CORS
     frontend_url: str = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    
+    # Twilio WhatsApp Configuration
+    twilio_enabled: bool = os.getenv("TWILIO_ENABLED", "false").lower() == "true"
+    twilio_account_sid: str = os.getenv("TWILIO_ACCOUNT_SID", "")
+    twilio_auth_token: str = os.getenv("TWILIO_AUTH_TOKEN", "")
+    twilio_whatsapp_from: str = os.getenv("TWILIO_WHATSAPP_FROM", "whatsapp:+14155238886")
+    twilio_admin_whatsapp_to: str = os.getenv("TWILIO_ADMIN_WHATSAPP_TO", "")
 
 
 settings = Settings()
