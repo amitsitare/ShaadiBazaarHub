@@ -50,5 +50,9 @@ class Settings(BaseModel):
     twilio_whatsapp_from: str = os.getenv("TWILIO_WHATSAPP_FROM", "whatsapp:+14155238886")
     twilio_admin_whatsapp_to: str = os.getenv("TWILIO_ADMIN_WHATSAPP_TO", "")
 
+    # Razorpay Configuration
+    razorpay_key_id: str = os.getenv("RAZORPAY_KEY_ID", "")
+    razorpay_key_secret: str = os.getenv("RAZORPAY_KEY_SECRET", "")
+
 
 settings = Settings()

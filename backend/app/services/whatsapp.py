@@ -26,6 +26,7 @@ class TwilioWhatsAppService:
         service_price: float,
         event_date: str, 
         quantity: int, 
+        duration_hours: Optional[int] = None,
         notes: Optional[str] = None
     ) -> bool:
         """Send WhatsApp notification using Twilio"""
@@ -45,7 +46,7 @@ class TwilioWhatsAppService:
         # Format the message
         message = self._format_booking_message(
             customer_name, customer_mobile, customer_address,
-            service_name, service_price, event_date, quantity, notes
+            service_name, service_price, event_date, quantity, duration_hours, notes
         )
         
         # Send using Twilio
@@ -102,6 +103,7 @@ class TwilioWhatsAppService:
         service_price: float,
         event_date: str, 
         quantity: int, 
+        duration_hours: Optional[int] = None,
         notes: Optional[str] = None
     ) -> str:
         """Format the booking notification message"""
@@ -113,6 +115,7 @@ class TwilioWhatsAppService:
 • Price: ₹{service_price:,.2f}
 • Quantity: {quantity}
 • Event Date: {event_date}
+• Duration: {str(duration_hours) + ' hours' if duration_hours else 'N/A'}
 
 👤 *Customer Information:*
 • Name: {customer_name}
@@ -190,6 +193,7 @@ async def send_booking_notification_to_provider(
     service_price: float,
     event_date: str,
     quantity: int,
+    duration_hours: Optional[int] = None,
     notes: Optional[str] = None
 ) -> bool:
     """
@@ -199,7 +203,7 @@ async def send_booking_notification_to_provider(
     # Use Twilio WhatsApp service
     success = await twilio_whatsapp_service.send_booking_notification(
         provider_whatsapp, customer_name, customer_mobile, customer_address,
-        service_name, service_price, event_date, quantity, notes
+        service_name, service_price, event_date, quantity, duration_hours, notes
     )
     
     if not success:
@@ -216,11 +220,27 @@ async def send_booking_notification_to_admin(
     service_price: float,
     event_date: str,
     quantity: int,
+    booking_address: Optional[str] = None,
+    duration_hours: Optional[int] = None,
+    provider_name: Optional[str] = None,
+    provider_mobile: Optional[str] = None,
     notes: Optional[str] = None,
 ) -> bool:
     """
     Send booking notification to a fixed admin WhatsApp number from settings
     """
+    # Augment admin message with address, duration and provider details by prefixing to notes
+    extra_lines = []
+    if booking_address:
+        extra_lines.append(f"Address: {booking_address}")
+    if duration_hours is not None:
+        extra_lines.append(f"Duration: {duration_hours} hours")
+    if provider_name:
+        extra_lines.append(f"Provider: {provider_name}")
+    if provider_mobile:
+        extra_lines.append(f"Provider Mobile: {provider_mobile}")
+    merged_notes = ("\n".join(extra_lines) + ("\n" + notes if notes else "")) if extra_lines else notes
+
     success = await twilio_whatsapp_service.send_admin_booking_notification(
         customer_name=customer_name,
         customer_email=customer_email,
@@ -229,7 +249,7 @@ async def send_booking_notification_to_admin(
         service_price=service_price,
         event_date=event_date,
         quantity=quantity,
-        notes=notes,
+        notes=merged_notes,
     )
     if not success:
         logger.warning("Admin WhatsApp notification failed or not configured")

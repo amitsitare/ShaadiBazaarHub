@@ -61,6 +61,8 @@ class BookingBase(BaseModel):
     event_date: date
     quantity: Optional[int] = 1
     notes: Optional[str] = None
+    address: Optional[str] = None
+    duration_hours: Optional[int] = None
 
 
 class BookingCreate(BookingBase):

@@ -81,6 +81,8 @@ def create_tables(conn):
             event_date DATE NOT NULL,
             quantity INTEGER NOT NULL DEFAULT 1,
             notes TEXT,
+            address TEXT,
+            duration_hours INTEGER,
             status TEXT NOT NULL CHECK (status IN ('pending','confirmed','cancelled')) DEFAULT 'pending',
             created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
@@ -103,6 +105,18 @@ def create_tables(conn):
         print("Added whatsapp_number column to users table")
     except Exception as e:
         print(f"Note: whatsapp_number column may already exist: {e}")
+
+    # Add new booking columns if they don't exist (for existing databases)
+    try:
+        conn.execute("""
+            ALTER TABLE bookings ADD COLUMN IF NOT EXISTS address TEXT;
+        """)
+        conn.execute("""
+            ALTER TABLE bookings ADD COLUMN IF NOT EXISTS duration_hours INTEGER;
+        """)
+        print("Ensured bookings.address and bookings.duration_hours columns exist")
+    except Exception as e:
+        print(f"Note: bookings columns may already exist: {e}")
     
     print("Tables created successfully!")
 
@@ -174,7 +188,7 @@ def insert_sample_data(conn):
             'provider_id': 1,  # Rajesh Catering
             'name': 'Wedding Catering Package',
             'description': 'Complete wedding catering with starters, main course, and desserts. Serves 100 people.',
-            'price': 25000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
             'location': 'Mumbai'
         },
@@ -182,7 +196,7 @@ def insert_sample_data(conn):
             'provider_id': 1,  # Rajesh Catering
             'name': 'Reception Dinner',
             'description': 'Elegant reception dinner with continental cuisine. Serves 50 people.',
-            'price': 15000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
             'location': 'Mumbai'
         },
@@ -190,7 +204,7 @@ def insert_sample_data(conn):
             'provider_id': 2,  # Priya Tent House
             'name': 'Wedding Tent Setup',
             'description': 'Beautiful decorated tent for outdoor wedding ceremonies. Size: 40x60 feet.',
-            'price': 35000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400',
             'location': 'Delhi'
         },
@@ -198,7 +212,7 @@ def insert_sample_data(conn):
             'provider_id': 2,  # Priya Tent House
             'name': 'Reception Tent',
             'description': 'Elegant reception tent with lighting and decoration. Size: 50x80 feet.',
-            'price': 45000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400',
             'location': 'Delhi'
         },
@@ -206,7 +220,7 @@ def insert_sample_data(conn):
             'provider_id': 3,  # Amit Band Baja
             'name': 'Traditional Band Baja',
             'description': 'Traditional Indian wedding music with dhol, shehnai, and other instruments.',
-            'price': 20000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400',
             'location': 'Bangalore'
         },
@@ -214,7 +228,7 @@ def insert_sample_data(conn):
             'provider_id': 3,  # Amit Band Baja
             'name': 'Modern DJ Package',
             'description': 'Modern wedding DJ with sound system, lighting, and music selection.',
-            'price': 18000.00,
+            'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400',
             'location': 'Bangalore'
         }
@@ -251,12 +265,21 @@ def insert_sample_data(conn):
     # Insert bookings
     for booking in sample_bookings:
         conn.execute("""
-            INSERT INTO bookings (service_id, customer_id, event_date, quantity, notes, status)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            INSERT INTO bookings (service_id, customer_id, event_date, quantity, notes, address, duration_hours, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT DO NOTHING
-        """, (booking['service_id'], booking['customer_id'], booking['event_date'], booking['quantity'], booking['notes'], booking['status']))
+        """, (
+            booking['service_id'], booking['customer_id'], booking['event_date'], booking['quantity'], booking['notes'],
+            booking.get('address'), booking.get('duration_hours'), booking['status']
+        ))
     
     print("Sample data inserted successfully!")
+
+
+def normalize_prices(conn):
+    """Force all existing services to have price = 1.00 as requested"""
+    conn.execute("UPDATE services SET price = 1.00;")
+    print("All service prices normalized to ₹1.00")
 
 
 def main():
@@ -286,6 +309,9 @@ def main():
             
             # Insert sample data
             insert_sample_data(conn)
+
+            # Normalize all prices to ₹1.00
+            normalize_prices(conn)
             
             # Commit changes
             conn.commit()

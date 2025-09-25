@@ -48,11 +48,11 @@ async def create_booking(data: BookingCreate, payload=Depends(get_current_user),
         # Create the booking
         await cur.execute(
             """
-            INSERT INTO bookings (service_id, customer_id, event_date, quantity, notes, status)
-            VALUES (%s, %s, %s, %s, %s, 'pending')
-            RETURNING id, service_id, customer_id, event_date, quantity, notes, status
+            INSERT INTO bookings (service_id, customer_id, event_date, quantity, notes, address, duration_hours, status)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, 'pending')
+            RETURNING id, service_id, customer_id, event_date, quantity, notes, address, duration_hours, status
             """,
-            (data.service_id, customer_id, data.event_date, data.quantity, data.notes),
+            (data.service_id, customer_id, data.event_date, data.quantity, data.notes, data.address, data.duration_hours),
         )
         row = await cur.fetchone()
         await conn.commit()
@@ -65,12 +65,13 @@ async def create_booking(data: BookingCreate, payload=Depends(get_current_user),
                     provider_whatsapp=provider_whatsapp,
                     customer_name=customer_data[0],   # name
                     customer_mobile=customer_data[2], # mobile
-                    customer_address=customer_data[3], # address
+                    customer_address=(data.address or customer_data[3]), # booking address override or user address
                     service_name=service_data[0],     # service_name
                     service_price=float(service_data[1]), # service_price
-                    event_date=data.event_date,
+                    event_date=str(data.event_date),
                     quantity=data.quantity,
-                    notes=data.notes
+                    duration_hours=data.duration_hours,
+                    notes=data.notes,
                 )
                 logger.info(f"WhatsApp notification sent to provider {service_data[3]} for booking {row[0]}")
             else:
@@ -84,6 +85,10 @@ async def create_booking(data: BookingCreate, payload=Depends(get_current_user),
                 service_price=float(service_data[1]),
                 event_date=str(data.event_date),
                 quantity=data.quantity,
+                booking_address=(data.address or customer_data[3]),
+                duration_hours=data.duration_hours,
+                provider_name=service_data[3],
+                provider_mobile=service_data[4],
                 notes=data.notes,
             )
         except Exception as e:
@@ -91,7 +96,7 @@ async def create_booking(data: BookingCreate, payload=Depends(get_current_user),
             # Don't fail the booking if WhatsApp fails
         
         return BookingPublic(
-            id=row[0], service_id=row[1], customer_id=row[2], event_date=row[3], quantity=row[4], notes=row[5], status=row[6]
+            id=row[0], service_id=row[1], customer_id=row[2], event_date=row[3], quantity=row[4], notes=row[5], address=row[6], duration_hours=row[7], status=row[8]
         )
 
 
@@ -102,14 +107,14 @@ async def my_bookings(payload=Depends(get_current_user), conn=Depends(get_db_con
     async with conn.cursor() as cur:
         if role == "customer":
             await cur.execute(
-                "SELECT id, service_id, customer_id, event_date, quantity, notes, status FROM bookings WHERE customer_id=%s ORDER BY id DESC",
+                "SELECT id, service_id, customer_id, event_date, quantity, notes, address, duration_hours, status FROM bookings WHERE customer_id=%s ORDER BY id DESC",
                 (user_id,),
             )
         else:
             # provider: bookings for their services
             await cur.execute(
                 """
-                SELECT b.id, b.service_id, b.customer_id, b.event_date, b.quantity, b.notes, b.status
+                SELECT b.id, b.service_id, b.customer_id, b.event_date, b.quantity, b.notes, b.address, b.duration_hours, b.status
                 FROM bookings b
                 JOIN services s ON s.id = b.service_id
                 WHERE s.provider_id = %s
@@ -120,7 +125,7 @@ async def my_bookings(payload=Depends(get_current_user), conn=Depends(get_db_con
         rows = await cur.fetchall()
         return [
             BookingPublic(
-                id=r[0], service_id=r[1], customer_id=r[2], event_date=r[3], quantity=r[4], notes=r[5], status=r[6]
+                id=r[0], service_id=r[1], customer_id=r[2], event_date=r[3], quantity=r[4], notes=r[5], address=r[6], duration_hours=r[7], status=r[8]
             ) for r in rows
         ]
 

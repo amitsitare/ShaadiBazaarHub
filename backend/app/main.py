@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routes import auth as auth_routes
 from .routes import services as services_routes
 from .routes import bookings as bookings_routes
+from .routes import payments as payments_routes
 from .config import settings
 
 
@@ -27,5 +28,6 @@ def health_check():
 app.include_router(auth_routes.router, prefix="/api/auth", tags=["auth"])
 app.include_router(services_routes.router, prefix="/api/services", tags=["services"])
 app.include_router(bookings_routes.router, prefix="/api/bookings", tags=["bookings"])
+app.include_router(payments_routes.router, prefix="/api/payments", tags=["payments"])
 
 

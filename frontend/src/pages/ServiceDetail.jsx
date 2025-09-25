@@ -8,6 +8,8 @@ export default function ServiceDetail() {
   const [service, setService] = useState(null);
   const [eventDate, setEventDate] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [address, setAddress] = useState('');
+  const [durationHours, setDurationHours] = useState('');
   const [notes, setNotes] = useState('');
   const [message, setMessage] = useState('');
 
@@ -17,13 +19,91 @@ export default function ServiceDetail() {
   };
   useEffect(() => { load(); }, [id]);
 
+  const openRazorpayAndPay = ({ key, amount, currency, name, description, order_id, prefill, notes }) => {
+    return new Promise((resolve, reject) => {
+      if (!window.Razorpay) {
+        reject(new Error('Razorpay SDK not loaded'));
+        return;
+      }
+      const options = {
+        key,
+        amount,
+        currency,
+        name,
+        description,
+        order_id,
+        prefill,
+        notes,
+        handler: function (response) {
+          resolve(response);
+        },
+        modal: { ondismiss: () => reject(new Error('Payment cancelled')) }
+      };
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    });
+  };
+
+  const ensureRazorpayScript = async () => {
+    if (window.Razorpay) return;
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = resolve;
+      script.onerror = () => reject(new Error('Failed to load Razorpay'));
+      document.body.appendChild(script);
+    });
+  };
+
   const book = async () => {
     setMessage('');
     const auth = getAuth();
     if (!auth.token || auth.role !== 'customer') { setMessage('Please login as customer to book'); return; }
     try {
-      await axios.post(`${API_BASE}/api/bookings/`, { service_id: Number(id), event_date: eventDate, quantity, notes }, { headers: authHeader() });
-      setMessage('Booking placed!');
+      await ensureRazorpayScript();
+
+      // 1) Create Razorpay order from backend
+      const configResp = await axios.get(`${API_BASE}/api/payments/config`);
+      const { key_id } = configResp.data;
+      const amountPaise = Math.round(Number(service.price) * 100);
+      const orderResp = await axios.post(`${API_BASE}/api/payments/create-order`, {
+        amount: amountPaise,
+        currency: 'INR',
+        receipt: `svc_${id}_${Date.now()}`,
+      }, { headers: authHeader() });
+
+      const order = orderResp.data;
+
+      // 2) Open Razorpay checkout
+      const payResponse = await openRazorpayAndPay({
+        key: key_id,
+        amount: order.amount,
+        currency: order.currency,
+        name: 'ShaadiBazaarHub',
+        description: service.name,
+        order_id: order.id,
+        prefill: {},
+        notes: { serviceId: id },
+      });
+
+      // 3) Verify payment signature
+      await axios.post(`${API_BASE}/api/payments/verify`, {
+        razorpay_order_id: payResponse.razorpay_order_id,
+        razorpay_payment_id: payResponse.razorpay_payment_id,
+        razorpay_signature: payResponse.razorpay_signature,
+      }, { headers: authHeader() });
+
+      // 4) Create booking only after payment success
+      await axios.post(`${API_BASE}/api/bookings/`, {
+        service_id: Number(id),
+        event_date: eventDate,
+        quantity,
+        notes,
+        address: address || undefined,
+        duration_hours: durationHours ? Number(durationHours) : undefined,
+      }, { headers: authHeader() });
+
+      setMessage('Payment successful and booking placed!');
     } catch (err) {
       setMessage(err.response?.data?.detail || 'Booking failed');
     }
@@ -76,6 +156,14 @@ export default function ServiceDetail() {
             <div className="mb-2">
               <label className="form-label">Quantity</label>
               <input type="number" min="1" className="form-control" value={quantity} onChange={e=>setQuantity(Number(e.target.value))} />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Service Address (optional)</label>
+              <input type="text" className="form-control" value={address} onChange={e=>setAddress(e.target.value)} placeholder="Venue or full address" />
+            </div>
+            <div className="mb-2">
+              <label className="form-label">Duration (hours, optional)</label>
+              <input type="number" min="1" className="form-control" value={durationHours} onChange={e=>setDurationHours(e.target.value)} />
             </div>
             <div className="mb-2">
               <label className="form-label">Notes</label>

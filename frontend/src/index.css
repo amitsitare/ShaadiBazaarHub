@@ -106,4 +106,100 @@ footer a:hover {
   }
 }
 
+/* Split layout bubbles */
+.service-bubbles {
+  height: 360px;
+  margin-top: 10px;
+}
+
+.bubble {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 999px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 6px;
+  color: #dc2626;
+  animation: floatY 4.5s ease-in-out infinite;
+}
+
+.bubble i { font-size: 28px; }
+.bubble span { font-size: 12px; color: #6b7280; }
+
+/* positions around the center */
+.bubble-1 { top: 0; left: 0; animation-delay: 0s; }
+.bubble-2 { top: 15%; left: 35%; animation-delay: .2s; }
+.bubble-3 { top: 5%; right: 0; animation-delay: .4s; }
+.bubble-4 { bottom: 0; left: 10%; animation-delay: .6s; }
+.bubble-5 { bottom: 10%; right: 25%; animation-delay: .8s; }
+.bubble-6 { bottom: 0; right: 0; animation-delay: 1s; }
+
+.bubble-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 180px;
+  height: 180px;
+  background: #fff;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,.08);
+}
+
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Mandap framing */
+.mandap-card { border: 8px solid #fff; }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .service-bubbles { height: 320px; }
+  .bubble { width: 90px; height: 90px; }
+  .bubble-center { width: 150px; height: 150px; }
+}
+
+/* Arch frame for mandap image */
+.arch-frame {
+  width: 100%;
+  height: 520px;
+  border-radius: 120px 120px 16px 16px; /* arch top */
+  border: 8px solid #fff;
+  background: linear-gradient(180deg, rgba(220,38,38,0.08), rgba(220,38,38,0));
+}
+
+/* Service chips */
+.service-chips { margin-top: 10px; }
+
+.service-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 999px; /* pill */
+  background: #ffffff;
+  color: #dc2626;
+  border: 1px solid rgba(220,38,38,0.15);
+  transition: all .25s ease;
+}
+
+.service-chip:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0,0,0,.08);
+  border-color: rgba(220,38,38,0.35);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .arch-frame { height: 420px; border-radius: 80px 80px 12px 12px; }
+}
+
 
