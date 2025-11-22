@@ -179,7 +179,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/ShaadiBazaarHub.git
+git clone https://github.com/amitsitare/ShaadiBazaarHub.git
 cd ShaadiBazaarHub
 ```
 
@@ -553,19 +553,6 @@ Contributions are welcome! Please follow these steps:
 - Add comments for complex logic
 - Update documentation for new features
 
----
-
-## 📞 Support
-
-### Contact Information
-- **Email**: amitdiwakar946@gmail.com
-- **Phone**: +91 63954 90029
-- **Address**: Tiwariganj, Lucknow, UP (226028), India
-
-### Getting Help
-- 📖 Check [API Documentation](https://your-backend.onrender.com/docs)
-- 🐛 Report bugs via [GitHub Issues](https://github.com/yourusername/ShaadiBazaarHub/issues)
-- 💬 Join our community discussions
 
 ---
 
