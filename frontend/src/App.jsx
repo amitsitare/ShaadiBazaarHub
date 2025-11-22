@@ -9,6 +9,7 @@ import ServiceList from './pages/ServiceList.jsx';
 import ServiceDetail from './pages/ServiceDetail.jsx';
 import ProviderDashboard from './pages/ProviderDashboard.jsx';
 import MyBookings from './pages/MyBookings.jsx';
+import ContactUs from './pages/ContactUs.jsx';
 import { getAuth } from './auth.js';
 
 function PrivateRoute({ children, role }) {
@@ -29,6 +30,7 @@ export default function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/services" element={<ServiceList />} />
           <Route path="/services/:id" element={<ServiceDetail />} />
+          <Route path="/contact-us" element={<ContactUs />} />
           <Route path="/dashboard" element={
             <PrivateRoute role="provider"><ProviderDashboard /></PrivateRoute>
           } />

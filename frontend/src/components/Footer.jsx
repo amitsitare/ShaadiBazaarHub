@@ -17,18 +17,51 @@ export default function Footer() {
                 Your trusted partner for all wedding services. We connect you with the best vendors 
                 to make your special day unforgettable.
               </p>
-              <div className="d-flex gap-3">
-                <a href="#" className="text-white fs-4">
-                  <i className="fab fa-facebook"></i>
+              <div className="d-flex gap-3 flex-wrap">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline-primary rounded-circle"
+                  style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <i className="fab fa-facebook-f"></i>
                 </a>
-                <a href="#" className="text-white fs-4">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline-danger rounded-circle"
+                  style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
                   <i className="fab fa-instagram"></i>
                 </a>
-                <a href="#" className="text-white fs-4">
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline-info rounded-circle"
+                  style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
                   <i className="fab fa-twitter"></i>
                 </a>
-                <a href="#" className="text-white fs-4">
-                  <i className="fab fa-youtube"></i>
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline-primary rounded-circle"
+                  style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <i className="fab fa-linkedin-in"></i>
+                </a>
+                <a
+                  href="https://whatsapp.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-outline-success rounded-circle"
+                  style={{ width: '45px', height: '45px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                >
+                  <i className="fab fa-whatsapp"></i>
                 </a>
               </div>
             </div>
@@ -66,29 +99,34 @@ export default function Footer() {
             <h6 className="fw-bold mb-3">Our Services</h6>
             <ul className="list-unstyled">
               <li className="mb-2">
-                <span className="text-light-emphasis">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
                   <i className="fas fa-utensils me-2"></i>Catering
-                </span>
+                </Link>
               </li>
               <li className="mb-2">
-                <span className="text-light-emphasis">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
                   <i className="fas fa-music me-2"></i>Band & DJ
-                </span>
+                </Link>
               </li>
               <li className="mb-2">
-                <span className="text-light-emphasis">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
                   <i className="fas fa-home me-2"></i>Venue Booking
-                </span>
+                </Link>
               </li>
               <li className="mb-2">
-                <span className="text-light-emphasis">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
                   <i className="fas fa-palette me-2"></i>Decoration
-                </span>
+                </Link>
               </li>
               <li className="mb-2">
-                <span className="text-light-emphasis">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
+                  <i className="fas fa-campground me-2"></i>Tent Setup
+                </Link>
+              </li>
+              <li className="mb-2">
+                <Link to="/services" className="text-light-emphasis text-decoration-none">
                   <i className="fas fa-camera me-2"></i>Photography
-                </span>
+                </Link>
               </li>
             </ul>
           </div>
@@ -100,19 +138,19 @@ export default function Footer() {
               <li className="mb-2">
                 <span className="text-light-emphasis">
                   <i className="fas fa-map-marker-alt me-2"></i>
-                  123 Wedding Street, Mumbai, India
+                  Tiwariganj, Lucknow, UP (226028), India
                 </span>
               </li>
               <li className="mb-2">
                 <span className="text-light-emphasis">
                   <i className="fas fa-phone me-2"></i>
-                  +91 98765 43210
+                  +91 63954 90029
                 </span>
               </li>
               <li className="mb-2">
                 <span className="text-light-emphasis">
                   <i className="fas fa-envelope me-2"></i>
-                  info@shaadibazaarhub.com
+                  amitdiwakar946@gmail.com
                 </span>
               </li>
               <li className="mb-2">

@@ -198,7 +198,7 @@ def insert_sample_data(conn):
             'description': 'Elegant reception dinner with continental cuisine. Serves 50 people.',
             'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
-            'location': 'Mumbai'
+            'location': 'Pune'
         },
         {
             'provider_id': 2,  # Priya Tent House
@@ -213,8 +213,8 @@ def insert_sample_data(conn):
             'name': 'Reception Tent',
             'description': 'Elegant reception tent with lighting and decoration. Size: 50x80 feet.',
             'price': 1.00,
-            'photo_url': 'https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=400',
-            'location': 'Delhi'
+            'photo_url': 'https://images.unsplash.com/photo-1519162808019-7de1683fa2ad?w=400',
+            'location': 'Noida'
         },
         {
             'provider_id': 3,  # Amit Band Baja
@@ -230,16 +230,23 @@ def insert_sample_data(conn):
             'description': 'Modern wedding DJ with sound system, lighting, and music selection.',
             'price': 1.00,
             'photo_url': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400',
-            'location': 'Bangalore'
+            'location': 'Hyderabad'
         }
     ]
+    
+    # Delete existing sample services to avoid duplicates
+    # Delete services from sample providers (IDs 1, 2, 3)
+    conn.execute("""
+        DELETE FROM services 
+        WHERE provider_id IN (1, 2, 3)
+    """)
+    print("Cleared existing sample services")
     
     # Insert services
     for service in sample_services:
         conn.execute("""
             INSERT INTO services (provider_id, name, description, price, photo_url, location)
             VALUES (%s, %s, %s, %s, %s, %s)
-            ON CONFLICT DO NOTHING
         """, (service['provider_id'], service['name'], service['description'], service['price'], service['photo_url'], service['location']))
     
     # Sample bookings

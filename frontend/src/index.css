@@ -202,4 +202,14 @@ footer a:hover {
   .arch-frame { height: 420px; border-radius: 80px 80px 12px 12px; }
 }
 
+/* Hover lift effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15) !important;
+}
+
 
